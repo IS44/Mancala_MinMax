@@ -1644,10 +1644,11 @@ namespace ISMancalaV1
             }
 
         }
-        public int getOne()
+        /* public int getOne()
         {
             return 1;
         }
+        */
         public int Evaluate(int depth, Board board)
         {
             int rv = CheckVictory(board);
