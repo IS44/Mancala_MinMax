@@ -88,20 +88,25 @@ namespace ISMancalaV1
                 PictureBox pb = (PictureBox)sender;
                 int y = int.Parse("" + pb.Tag.ToString()[0]);
                 int x = int.Parse("" + pb.Tag.ToString()[1]);
-                /*
+                
                 if (board.turn == false)
                 {
-                    MessageBox.Show(MinMax(1, board).ToString());
+                    Move move = new Move();
+                    Move[] moveList = move.MoveArray(board);
+                    move = move.GetBestMove(moveList);
+                    board.Movement(move.getY(), move.getX());
                 }
-                */
+                
                 if (board.turn == true && y == 1 || board.turn == false && y == 0)
                 {
-                    MessageBox.Show("Grade for the move you made: " + getScore(board, y, x).ToString());
+                    //MessageBox.Show("Grade for the move you made: " + getScore(board, y, x).ToString());
 
                     board.Movement(y, x);
                    
                 }
+                
 
+                
                 if (board.playerPoints == board.pcPoints && board.pcPoints == 24)
                 {
                     MessageBox.Show("The game ended with a tie");
@@ -1620,7 +1625,7 @@ namespace ISMancalaV1
 
         
         //0=Game isn't finished, 1= player wins, 2=computer wins, 3=tie
-        public int CheckVictory(Board board)
+        private int CheckVictory(Board board)
         {
 
             if(board.GetPcPoints()<24 && board.GetPlayerPoints() < 24)
@@ -1649,7 +1654,7 @@ namespace ISMancalaV1
             return 1;
         }
         */
-        public int Evaluate(int depth, Board board)
+        private int Evaluate(int depth, Board board)
         {
             int rv = CheckVictory(board);
             if(rv==2) //computer wins
@@ -1662,21 +1667,24 @@ namespace ISMancalaV1
             }
             return 0;
         }
-
-
-        protected int getScore(Board board, int line, int column)
+        
+        
+        /*
+        private Move GetMove(Board board, int line, int column)
         {
             
-            int i, j;
+            int i, j,score;
+            
             Board board1 = board.DeepCopy();
+            int move;
             board1.Movement(line, column);
             if (board.GetTurn())
             {
                 if (board1.GetTurn())
                 {
-                    return 100; //highest grade returned, the player has another turn
+                    score= 100; //highest grade returned, the player has another turn
                 }
-                if (board1.GetPlayerPoints() > board.GetPlayerPoints())
+                if (board1.GetPlayerPoints() > board.GetPlayerPoints() && score==0)
                 {
                     return 50;//second highest grade returned, player/computer has no turn but has more points
                 }
@@ -1694,14 +1702,14 @@ namespace ISMancalaV1
             }
             return 0;
         }
+        */
 
 
 
 
 
 
-
-        protected int MinMax(int depth, Board board)
+        private int MinMax(int depth, Board board)
         {
             Board board1 = board.DeepCopy();
 
