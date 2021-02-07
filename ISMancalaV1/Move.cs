@@ -33,7 +33,7 @@ namespace ISMancalaV1
         public Move[] MoveArray2(Board board)
         {
             int i;
-            int depth = 5;
+            int depth = 2;
             int score, moveArrayPlace = 0;
             int moveCount = 0;
             if (board.GetTurn())

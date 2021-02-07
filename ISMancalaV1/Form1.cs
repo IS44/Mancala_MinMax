@@ -1701,17 +1701,23 @@ namespace ISMancalaV1
         */
         private int Evaluate(int depth, Board board)
         {
-            if (board.GetPcPoints() > board.GetPlayerPoints())
+            int pcPoints = board.GetPcPoints(), playerPoints = board.GetPlayerPoints();
+
+            if (pcPoints > playerPoints)
             {
-                return 150;
+                int pcMinusplayer = pcPoints - playerPoints;
+                int score = 150 + pcMinusplayer ;
+                return score;
             }
-            else if (board.GetPcPoints() == board.GetPlayerPoints())
+            else if (pcPoints == playerPoints)
             {
                 return 0;
             }
             else
             {
-                return -150;
+                int playerMinusPc = playerPoints - pcPoints;
+                int score = -150-playerMinusPc;
+                return score;
             }
         }
         
