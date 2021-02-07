@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ISMancalaV1
 {
-    public class Move
+    public class Move: Form1
     {
         public int score;
         public int x;
@@ -19,28 +19,106 @@ namespace ISMancalaV1
             this.score = score;
         }
 
-
+        public int GetScore()
+        {
+            return this.score;
+        }
         public Move DeepCopy()
         {
             Move newMove = new Move(this.y, this.x, this.score);
             return newMove;
         }
-    
-        public Move[] MoveArray(Board board)
+
+
+        public Move[] MoveArray2(Board board)
         {
             int i;
-            int score,moveArrayPlace=0;
+            int depth = 5;
+            int score, moveArrayPlace = 0;
             int moveCount = 0;
             if (board.GetTurn())
             {
-                for ( i = 0; i < 6; i++)
+                for (i = 0; i < 6; i++)
                 {
-                    
+
                     if (board.getItemsInSpot()[1, i] > 0)
                     {
                         moveCount++;
                     }
                 }
+                if (moveCount > 0)
+                {
+                    Move[] moveList = new Move[moveCount];
+                    for (i = 0; i < 6; i++)
+                    {
+                        if (board.getItemsInSpot()[1, i] > 0)
+                        {
+                            Board board1 = board.DeepCopy();
+
+                            board1.Movement(1, i);
+                            score = MinMax(depth, board1.DeepCopy());
+                            moveList[moveArrayPlace] = new Move(1, i, score);
+                            moveArrayPlace++;
+                        }
+                    }
+                    return moveList;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                for (i = 0; i < 6; i++)
+                {
+
+                    if (board.getItemsInSpot()[0, i] > 0)
+                    {
+                        moveCount++;
+                    }
+                }
+                if (moveCount > 0)
+                {
+                    Move[] moveList = new Move[moveCount];
+                    for (i = 0; i < 6; i++)
+                    {
+                        if (board.getItemsInSpot()[0, i] > 0)
+                        {
+                            Board board1 = board.DeepCopy();
+
+                            board1.Movement(0, i);
+
+                            score = MinMax(depth, board1.DeepCopy());
+                            moveList[moveArrayPlace] = new Move(0, i, score);
+                            moveArrayPlace++;
+                        }
+                    }
+                    return moveList;
+                }
+                return null;
+
+            }
+
+
+        }
+
+        public Move[] MoveArray(Board board)
+        {
+            int i;
+            int score, moveArrayPlace = 0;
+            int moveCount = 0;
+            if (board.GetTurn())
+            {
+                for (i = 0; i < 6; i++)
+                {
+
+                    if (board.getItemsInSpot()[1, i] > 0)
+                    {
+                        moveCount++;
+                    }
+                }
+
                 if (moveCount > 0)
                 {
                     Move[] moveList = new Move[moveCount];
@@ -142,12 +220,11 @@ namespace ISMancalaV1
                     return moveList;
                 }
                 return null;
-                
+
             }
 
-             
-        }
 
+        }
         public int getScore()
         {
             return this.score;
@@ -161,27 +238,27 @@ namespace ISMancalaV1
             return this.y;
         }
 
-        public Move GetBestMove(Move[] moveList)
+        public Move GetBestMove(Move[] moveArray)
         {
             Move bestMove = null;
-            if (moveList != null)
+            if (moveArray != null)
             {
-                bestMove = moveList[0].DeepCopy();
-                if (moveList.Length > 1)
+                bestMove = moveArray[0].DeepCopy();
+                if (moveArray.Length > 1)
                 {
-                    for (int i = 1; i < moveList.Length; i++)
+                    for (int i = 1; i < moveArray.Length; i++)
                     {
-                        if (bestMove.getScore() < moveList[i].getScore())
+                        if (bestMove.getScore() < moveArray[i].getScore())
                         {
-                            bestMove = moveList[i].DeepCopy();
+                            bestMove = moveArray[i].DeepCopy();
                         }
                     }
                 }
             }
-            
+
             return bestMove;
         }
-        
+
 
 
     }

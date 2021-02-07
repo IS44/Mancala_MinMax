@@ -33,6 +33,7 @@ namespace ISMancalaV1
             this.turn = turn;
         }
 
+        
         public Board DeepCopy()
         {
             /*

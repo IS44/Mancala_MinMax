@@ -88,25 +88,48 @@ namespace ISMancalaV1
                 PictureBox pb = (PictureBox)sender;
                 int y = int.Parse("" + pb.Tag.ToString()[0]);
                 int x = int.Parse("" + pb.Tag.ToString()[1]);
-                
-                if (board.turn == false)
-                {
-                    Move move = new Move();
-                    Move[] moveList = move.MoveArray(board);
-                    move = move.GetBestMove(moveList);
-                    board.Movement(move.getY(), move.getX());
-                }
-                
+
+
+                /* checking if the turn is correct with the click and activating computer turn if neccesary
                 if (board.turn == true && y == 1 || board.turn == false && y == 0)
                 {
                     //MessageBox.Show("Grade for the move you made: " + getScore(board, y, x).ToString());
+                    if (board.turn == false)
+                    {
+                        Move move = new Move();
+                        Move[] moveList = move.MoveArray(board);
+                        move = move.GetBestMove(moveList);
+                        board.Movement(move.getY(), move.getX());
+                    }
+                    else
+                    {
+                        board.Movement(y, x);
+                    }
 
-                    board.Movement(y, x);
-                   
                 }
-                
+                */
 
-                
+                if (board.turn == true && y == 1)
+                {
+                    board.Movement(y, x);
+                    Change_pictures();
+                    //MessageBox.Show("minmax:" + MinMax(2, board.DeepCopy()));
+
+                    while ((board.turn == false)&&(CheckVictory(board))==0)
+                    {
+                        Move move = new Move();
+                        Move[] moveArray = move.MoveArray2(board);
+                        move = move.GetBestMove(moveArray);
+                        board.Movement(move.getY(), move.getX());
+                        Wait(2000);
+                        MessageBox.Show("minmax:" + MinMax(1, board.DeepCopy()));
+                        Change_pictures();
+
+                    }
+                }
+
+
+
                 if (board.playerPoints == board.pcPoints && board.pcPoints == 24)
                 {
                     MessageBox.Show("The game ended with a tie");
@@ -122,10 +145,32 @@ namespace ISMancalaV1
                     MessageBox.Show("The 2nd player had: " + board.pcPoints + "points and has won, the 1st player had: " + board.playerPoints + " points");
                     board.restartBoard();
                 }
-
                 Change_pictures();
+
             }
-            
+            void Wait(int milliseconds)
+            {
+                var timer1 = new System.Windows.Forms.Timer();
+                if (milliseconds == 0 || milliseconds < 0) return;
+
+                // Console.WriteLine("start wait timer");
+                timer1.Interval = milliseconds;
+                timer1.Enabled = true;
+                timer1.Start();
+
+                timer1.Tick += (s, e) =>
+                {
+                    timer1.Enabled = false;
+                    timer1.Stop();
+                    // Console.WriteLine("stop wait timer");
+                };
+
+                while (timer1.Enabled)
+                {
+                    Application.DoEvents();
+                }
+            }
+
             void Change_pictures()
             { 
                 foreach (Control c in this.Controls)
@@ -1656,16 +1701,18 @@ namespace ISMancalaV1
         */
         private int Evaluate(int depth, Board board)
         {
-            int rv = CheckVictory(board);
-            if(rv==2) //computer wins
+            if (board.GetPcPoints() > board.GetPlayerPoints())
             {
-                return 1 + depth;
+                return 150;
             }
-            if(rv==1) //player wins
+            else if (board.GetPcPoints() == board.GetPlayerPoints())
             {
-                return -1 - depth;
+                return 0;
             }
-            return 0;
+            else
+            {
+                return -150;
+            }
         }
         
         
@@ -1708,8 +1755,8 @@ namespace ISMancalaV1
 
 
 
-
-        private int MinMax(int depth, Board board)
+        
+        public int MinMax(int depth, Board board)
         {
             Board board1 = board.DeepCopy();
 
@@ -1724,16 +1771,16 @@ namespace ISMancalaV1
 
             if (board1.GetTurn() == false)//computer
             {
-                int max = -100;
+                int max = 100;
                 
                 for (int i=0; i<6; i++)
                 {
-                    if (board1.getItemsInSpot()[0, i] == 0)
+                    if (board1.getItemsInSpot()[0, i] != 0)
                     {
                         Board board2 = board1.DeepCopy();
                         board2.Movement(0, i);
                         score = MinMax(depth - 1, board2);
-                        if (score > max)
+                        if (score > max)    
                         {
                             max = score;
                         }                       
@@ -1743,15 +1790,18 @@ namespace ISMancalaV1
             }
             else //player
             {
-                int min = 100;
+                int min = -100;
                 for(int i=0; i<6; i++)
                 {
-                    Board board2 = board1.DeepCopy();
-                    board2.Movement(1, i);
-                    score = MinMax(depth - 1, board2);
-                    if (score < min)
+                    if (board1.getItemsInSpot()[1,i] != 0)
                     {
-                        min = score;
+                        Board board2 = board1.DeepCopy();
+                        board2.Movement(1, i);
+                        score = MinMax(depth - 1, board2);
+                        if (score < min)
+                        {
+                            min = score;
+                        }
                     }
                 }
                 return min;
