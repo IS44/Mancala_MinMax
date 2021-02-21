@@ -32,7 +32,7 @@ namespace ISMancalaV1
 
         public Move[] MoveArray2(Board board)
         {
-            int i;
+            int i,counter;
             int depth = 2;
             int score, moveArrayPlace = 0;
             int moveCount = 0;
@@ -56,7 +56,19 @@ namespace ISMancalaV1
                             Board board1 = board.DeepCopy();
 
                             board1.Movement(1, i);
-                            score = MinMax(depth, board1.DeepCopy());
+                            score = -1;
+                            score = MinMax(depth, board1.DeepCopy(), true);
+                            if (score < 0)
+                            {
+                                counter = 0;
+                                while (score < 0)
+                                {
+                                    counter++;
+                                    score = MinMax(depth + counter, board1.DeepCopy(), true);
+                                }
+                            }
+                            
+                            
                             moveList[moveArrayPlace] = new Move(1, i, score);
                             moveArrayPlace++;
                         }
@@ -88,8 +100,17 @@ namespace ISMancalaV1
                             Board board1 = board.DeepCopy();
 
                             board1.Movement(0, i);
-
-                            score = MinMax(depth, board1.DeepCopy());
+                            score = 1;
+                            score = MinMax(depth, board1.DeepCopy(),false);
+                            if (score > 0)
+                            {
+                                counter = 0;
+                                while (score > 0)
+                                {
+                                    counter++;
+                                    score = MinMax(depth + counter, board1.DeepCopy(), false);
+                                }
+                            }
                             moveList[moveArrayPlace] = new Move(0, i, score);
                             moveArrayPlace++;
                         }

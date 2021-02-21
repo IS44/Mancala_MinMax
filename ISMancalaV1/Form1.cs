@@ -122,7 +122,7 @@ namespace ISMancalaV1
                         move = move.GetBestMove(moveArray);
                         board.Movement(move.getY(), move.getX());
                         Wait(2000);
-                        MessageBox.Show("minmax:" + MinMax(1, board.DeepCopy()));
+                        MessageBox.Show("minmax:" + MinMax(1, board.DeepCopy(),board.GetTurn()));
                         Change_pictures();
 
                     }
@@ -1699,10 +1699,17 @@ namespace ISMancalaV1
             return 1;
         }
         */
-        private int Evaluate(int depth, Board board)
+        private int Evaluate(int depth, Board board,Boolean max)
         {
             int pcPoints = board.GetPcPoints(), playerPoints = board.GetPlayerPoints();
-
+            int pcMinusPlayer = pcPoints - playerPoints;
+            int playerMinusPc = playerPoints - pcPoints;
+            if (board.GetTurn() == false)
+            {
+                return 50 + pcMinusPlayer;
+            }
+            return (-50 - playerMinusPc);
+            /*
             if (pcPoints > playerPoints)
             {
                 int pcMinusplayer = pcPoints - playerPoints;
@@ -1719,6 +1726,7 @@ namespace ISMancalaV1
                 int score = -150-playerMinusPc;
                 return score;
             }
+            */
         }
         
         
@@ -1762,22 +1770,24 @@ namespace ISMancalaV1
 
 
         
-        public int MinMax(int depth, Board board)
+        public int MinMax(int depth, Board board,Boolean originalTurn)
         {
             Board board1 = board.DeepCopy();
 
-
+            
             int rv = CheckVictory(board1);
 
-            if (depth == 0 || rv > 0)
+            
+            if (depth ==0|| rv > 0)
             {
-                return Evaluate(depth, board);
+                return Evaluate(depth, board,true);
             }
+
             int score;
 
             if (board1.GetTurn() == false)//computer
             {
-                int max = 100;
+                int max = -100;
                 
                 for (int i=0; i<6; i++)
                 {
@@ -1785,7 +1795,7 @@ namespace ISMancalaV1
                     {
                         Board board2 = board1.DeepCopy();
                         board2.Movement(0, i);
-                        score = MinMax(depth - 1, board2);
+                        score = MinMax(depth - 1, board2.DeepCopy(),true);
                         if (score > max)    
                         {
                             max = score;
@@ -1796,14 +1806,14 @@ namespace ISMancalaV1
             }
             else //player
             {
-                int min = -100;
+                int min = 100;
                 for(int i=0; i<6; i++)
                 {
                     if (board1.getItemsInSpot()[1,i] != 0)
                     {
                         Board board2 = board1.DeepCopy();
                         board2.Movement(1, i);
-                        score = MinMax(depth - 1, board2);
+                        score = MinMax(depth - 1, board2,false);
                         if (score < min)
                         {
                             min = score;
