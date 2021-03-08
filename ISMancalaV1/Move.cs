@@ -61,7 +61,7 @@ namespace ISMancalaV1
                             if (score < 0)
                             {
                                 counter = 0;
-                                while (score < 0)
+                                while (score < 0 &&counter<5)
                                 {
                                     counter++;
                                     score = MinMax(depth + counter, board1.DeepCopy(), true);
@@ -105,7 +105,7 @@ namespace ISMancalaV1
                             if (score > 0)
                             {
                                 counter = 0;
-                                while (score > 0)
+                                while (score > 0 && counter<5)
                                 {
                                     counter++;
                                     score = MinMax(depth + counter, board1.DeepCopy(), false);

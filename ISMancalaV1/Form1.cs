@@ -121,8 +121,8 @@ namespace ISMancalaV1
                         Move[] moveArray = move.MoveArray2(board);
                         move = move.GetBestMove(moveArray);
                         board.Movement(move.getY(), move.getX());
-                        Wait(2000);
-                        MessageBox.Show("minmax:" + MinMax(1, board.DeepCopy(),board.GetTurn()));
+                        Wait(10);
+                        //MessageBox.Show("minmax:" + MinMax(1, board.DeepCopy(),board.GetTurn()));
                         Change_pictures();
 
                     }
@@ -1699,11 +1699,24 @@ namespace ISMancalaV1
             return 1;
         }
         */
-        private int Evaluate(int depth, Board board,Boolean max)
+        private int Evaluate(int depth, Board board, Boolean max)
         {
             int pcPoints = board.GetPcPoints(), playerPoints = board.GetPlayerPoints();
             int pcMinusPlayer = pcPoints - playerPoints;
             int playerMinusPc = playerPoints - pcPoints;
+            int checkvictory = CheckVictory(board);
+            if (checkvictory == 1)
+            {
+                return -1000;
+            }
+            if (checkvictory == 2)
+            {
+                return 1000;
+            }
+            if (checkvictory == 3)
+            {
+                return 0;
+            }
             if (board.GetTurn() == false)
             {
                 return 50 + pcMinusPlayer;
