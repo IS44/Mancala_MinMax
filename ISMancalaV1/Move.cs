@@ -19,10 +19,7 @@ namespace ISMancalaV1
             this.score = score;
         }
 
-        public int GetScore()
-        {
-            return this.score;
-        }
+        
         public Move DeepCopy()
         {
             Move newMove = new Move(this.y, this.x, this.score);
@@ -32,6 +29,7 @@ namespace ISMancalaV1
 
         public Move[] MoveArray2(Board board)
         {
+            Console.WriteLine("Movearray2 active");
             int i,counter;
             int depth = 2;
             int score, moveArrayPlace = 0;
@@ -49,7 +47,7 @@ namespace ISMancalaV1
                 if (moveCount > 0)
                 {
                     Move[] moveList = new Move[moveCount];
-                    for (i = 0; i < 6; i++)
+                    for (i = 0; i < moveCount; i++)
                     {
                         if (board.getItemsInSpot()[1, i] > 0)
                         {
@@ -115,137 +113,19 @@ namespace ISMancalaV1
                             moveArrayPlace++;
                         }
                     }
+                    Console.WriteLine("movearray2 closed");
+
                     return moveList;
                 }
+                Console.WriteLine("movearray2 closed");
+
                 return null;
 
             }
 
-
         }
-
-        public Move[] MoveArray(Board board)
-        {
-            int i;
-            int score, moveArrayPlace = 0;
-            int moveCount = 0;
-            if (board.GetTurn())
-            {
-                for (i = 0; i < 6; i++)
-                {
-
-                    if (board.getItemsInSpot()[1, i] > 0)
-                    {
-                        moveCount++;
-                    }
-                }
-
-                if (moveCount > 0)
-                {
-                    Move[] moveList = new Move[moveCount];
-                    for (i = 0; i < 6; i++)
-                    {
-                        if (board.getItemsInSpot()[1, i] > 0)
-                        {
-                            Board board1 = board.DeepCopy();
-
-                            board1.Movement(1, i);
-                            if (board1.GetTurn())
-                            {
-                                score = 100;
-                                moveList[moveArrayPlace] = new Move(1, i, score);
-                            }
-                            else
-                            {
-                                if (board1.GetPlayerPoints() > board.GetPlayerPoints() + 1 && board1.GetPcPoints() == board.GetPcPoints())
-                                {
-                                    score = 75;
-                                    moveList[moveArrayPlace] = new Move(1, i, score);
-                                }
-                                else
-                                {
-                                    if (board1.GetPlayerPoints() > board.GetPlayerPoints())
-                                    {
-                                        score = 50;
-                                        moveList[moveArrayPlace] = new Move(1, i, score);
-                                    }
-                                    else
-                                    {
-                                        score = 0;
-                                        moveList[moveArrayPlace] = new Move(1, i, score);
-                                    }
-                                }
-                            }
-                            moveArrayPlace++;
-                        }
-                    }
-                    return moveList;
-
-                }
-                else
-                {
-                    return null;
-                }
-
-
-            }
-            else
-            {
-                for (i = 0; i < 6; i++)
-                {
-
-                    if (board.getItemsInSpot()[0, i] > 0)
-                    {
-                        moveCount++;
-                    }
-                }
-                if (moveCount > 0)
-                {
-                    Move[] moveList = new Move[moveCount];
-                    for (i = 0; i < 6; i++)
-                    {
-                        if (board.getItemsInSpot()[0, i] > 0)
-                        {
-                            Board board1 = board.DeepCopy();
-
-                            board1.Movement(0, i);
-                            if (!board1.GetTurn())
-                            {
-                                score = 100;
-                                moveList[moveArrayPlace] = new Move(0, i, score);
-                            }
-                            else
-                            {
-                                if (board1.GetPcPoints() > board.GetPcPoints() + 1 && board1.GetPlayerPoints() == board.GetPlayerPoints())
-                                {
-                                    score = 75;
-                                    moveList[moveArrayPlace] = new Move(0, i, score);
-                                }
-                                else
-                                {
-                                    if (board1.GetPcPoints() > board.GetPcPoints())
-                                    {
-                                        score = 50;
-                                        moveList[moveArrayPlace] = new Move(0, i, score);
-                                    }
-                                    else
-                                    {
-                                        score = 0;
-                                        moveList[moveArrayPlace] = new Move(0, i, score);
-                                    }
-                                }
-                            }
-                            moveArrayPlace++;
-                        }
-                    }
-                    return moveList;
-                }
-                return null;
-
-            }
-
-
-        }
+        
+        
         public int getScore()
         {
             return this.score;
@@ -261,6 +141,7 @@ namespace ISMancalaV1
 
         public Move GetBestMove(Move[] moveArray)
         {
+            Console.WriteLine("Getbestmove openned");
             Move bestMove = null;
             if (moveArray != null)
             {
@@ -277,7 +158,9 @@ namespace ISMancalaV1
                 }
             }
 
+            Console.WriteLine("getbestmove closed");
             return bestMove;
+
         }
 
 

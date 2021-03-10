@@ -90,62 +90,76 @@ namespace ISMancalaV1
                 int x = int.Parse("" + pb.Tag.ToString()[1]);
 
 
-                /* checking if the turn is correct with the click and activating computer turn if neccesary
-                if (board.turn == true && y == 1 || board.turn == false && y == 0)
-                {
-                    //MessageBox.Show("Grade for the move you made: " + getScore(board, y, x).ToString());
-                    if (board.turn == false)
-                    {
-                        Move move = new Move();
-                        Move[] moveList = move.MoveArray(board);
-                        move = move.GetBestMove(moveList);
-                        board.Movement(move.getY(), move.getX());
-                    }
-                    else
-                    {
-                        board.Movement(y, x);
-                    }
-
-                }
-                */
+                
 
                 if (board.turn == true && y == 1)
                 {
+                    Console.WriteLine("player's turn now");
                     board.Movement(y, x);
                     Change_pictures();
-                    //MessageBox.Show("minmax:" + MinMax(2, board.DeepCopy()));
+                    Console.WriteLine(board.PrintInfo());
 
+
+                    if(CheckVictory(board) != 0)
+                    {
+                        if (CheckVictory(board) == 1)
+                        {
+                            MessageBox.Show("The 1st player had: " + board.playerPoints + "points and has won, the 2nd player had: " + board.pcPoints + " points");
+                            board.restartBoard();
+                        }
+                        else if (CheckVictory(board) == 2)
+                        {
+                            MessageBox.Show("The 2nd player had: " + board.pcPoints + "points and has won, the 1st player had: " + board.playerPoints + " points");
+                            board.restartBoard();
+                        }
+                        else if (CheckVictory(board) == 3)
+                        {
+                            MessageBox.Show("The game ended with a tie");
+                            board.restartBoard();
+                        }
+                    }
+                    Change_pictures();
+                    
                     while ((board.turn == false)&&(CheckVictory(board))==0)
                     {
+                        Console.WriteLine("Computer's turn now");
+
                         Move move = new Move();
                         Move[] moveArray = move.MoveArray2(board);
+                        Console.WriteLine("array created");
                         move = move.GetBestMove(moveArray);
+                        Console.WriteLine("best move got");
                         board.Movement(move.getY(), move.getX());
+                        Console.WriteLine("board movement done");
                         Wait(10);
-                        //MessageBox.Show("minmax:" + MinMax(1, board.DeepCopy(),board.GetTurn()));
                         Change_pictures();
-
+                        Console.WriteLine("Pictures changed");
+                        Console.WriteLine(board.PrintInfo());
                     }
+                    if (CheckVictory(board) != 0)
+                    {
+                        if (CheckVictory(board) == 1)
+                        {
+                            MessageBox.Show("The 1st player had: " + board.playerPoints + "points and has won, the 2nd player had: " + board.pcPoints + " points");
+                            board.restartBoard();
+                        }
+                        else if (CheckVictory(board) == 2)
+                        {
+                            MessageBox.Show("The 2nd player had: " + board.pcPoints + "points and has won, the 1st player had: " + board.playerPoints + " points");
+                            board.restartBoard();
+                        }
+                        else if(CheckVictory(board)==3)
+                        {
+                            MessageBox.Show("The game ended with a tie");
+                            board.restartBoard();
+                        }
+                    }
+                    Change_pictures();
                 }
 
 
 
-                if (board.playerPoints == board.pcPoints && board.pcPoints == 24)
-                {
-                    MessageBox.Show("The game ended with a tie");
-                }
-
-                if (board.playerPoints > 24)
-                {
-                    MessageBox.Show("The 1st player had: " + board.playerPoints + "points and has won, the 2nd player had: " + board.pcPoints + " points");
-                    board.restartBoard();
-                }
-                if (board.pcPoints > 24)
-                {
-                    MessageBox.Show("The 2nd player had: " + board.pcPoints + "points and has won, the 1st player had: " + board.playerPoints + " points");
-                    board.restartBoard();
-                }
-                Change_pictures();
+                
 
             }
             void Wait(int milliseconds)
@@ -1672,35 +1686,37 @@ namespace ISMancalaV1
         //0=Game isn't finished, 1= player wins, 2=computer wins, 3=tie
         private int CheckVictory(Board board)
         {
+            Console.WriteLine("Checkvictory openned");
 
-            if(board.GetPcPoints()<24 && board.GetPlayerPoints() < 24)
+            if (board.GetPcPoints() > 24)
             {
-                return 0;
+                Console.WriteLine("Checkvictory closed");
+
+                return 2;
+            }
+            else if (board.GetPlayerPoints() > 24)
+            {
+                Console.WriteLine("Checkvictory closed");
+                return 1;
+            }
+            else if(board.GetPlayerPoints()==24 && board.GetPcPoints() == 24)
+            {
+                Console.WriteLine("Checkvictory closed");
+
+                return 3;
             }
             else
             {
-                if (board.GetPcPoints() > 24)
-                {
-                    return 2;
-                }
-                else
-                {
-                    if (board.GetPlayerPoints() > 24)
-                    {
-                        return 1;
-                    }
-                    return 3;
-                }
+                Console.WriteLine("Checkvictory closed");
+                return 0;
             }
+             
 
         }
-        /* public int getOne()
+      
+        private int Evaluate( Board board)
         {
-            return 1;
-        }
-        */
-        private int Evaluate(int depth, Board board, Boolean max)
-        {
+            Console.WriteLine("Evaluation start");
             int pcPoints = board.GetPcPoints(), playerPoints = board.GetPlayerPoints();
             int pcMinusPlayer = pcPoints - playerPoints;
             int playerMinusPc = playerPoints - pcPoints;
@@ -1722,61 +1738,11 @@ namespace ISMancalaV1
                 return 50 + pcMinusPlayer;
             }
             return (-50 - playerMinusPc);
-            /*
-            if (pcPoints > playerPoints)
-            {
-                int pcMinusplayer = pcPoints - playerPoints;
-                int score = 150 + pcMinusplayer ;
-                return score;
-            }
-            else if (pcPoints == playerPoints)
-            {
-                return 0;
-            }
-            else
-            {
-                int playerMinusPc = playerPoints - pcPoints;
-                int score = -150-playerMinusPc;
-                return score;
-            }
-            */
+            
         }
         
         
-        /*
-        private Move GetMove(Board board, int line, int column)
-        {
-            
-            int i, j,score;
-            
-            Board board1 = board.DeepCopy();
-            int move;
-            board1.Movement(line, column);
-            if (board.GetTurn())
-            {
-                if (board1.GetTurn())
-                {
-                    score= 100; //highest grade returned, the player has another turn
-                }
-                if (board1.GetPlayerPoints() > board.GetPlayerPoints() && score==0)
-                {
-                    return 50;//second highest grade returned, player/computer has no turn but has more points
-                }
-            }
-            else
-            {
-                if (board1.GetTurn() == false)
-                {
-                    return 100; //higest grade returned, the computer has another turn
-                }
-                if (board1.GetPcPoints() > board.GetPcPoints())
-                {
-                    return 50;//second highest grade returned, player/computer has no turn but has more points
-                }
-            }
-            return 0;
-        }
-        */
+        
 
 
 
@@ -1785,6 +1751,7 @@ namespace ISMancalaV1
         
         public int MinMax(int depth, Board board,Boolean originalTurn)
         {
+            Console.WriteLine("Minimax open");
             Board board1 = board.DeepCopy();
 
             
@@ -1793,7 +1760,7 @@ namespace ISMancalaV1
             
             if (depth ==0|| rv > 0)
             {
-                return Evaluate(depth, board,true);
+                return Evaluate(board);
             }
 
             int score;
@@ -1834,7 +1801,8 @@ namespace ISMancalaV1
                     }
                 }
                 return min;
-            }       
+            }
+            Console.WriteLine("Minimax closed");
         }
     }
 }

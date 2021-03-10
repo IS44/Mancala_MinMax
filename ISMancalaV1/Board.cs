@@ -36,19 +36,10 @@ namespace ISMancalaV1
         
         public Board DeepCopy()
         {
-            /*
-            int[,] newArray = new int[2, 6];
-            for (int i=0; i<2; i++)
-            {
-                for (int j=0; j<6; j++)
-                {
-                    newArray[i,j]=this.itemsInSpot
-                }
-            }
-            */
+           
 
             Board board1 = new Board(this.getItemsInSpot(), this.pcPoints, this.playerPoints, this.turn);
-
+            
             return board1;
         }
 
@@ -60,11 +51,7 @@ namespace ISMancalaV1
         }
         
 
-        public int PlayerGrade(Board board1) //checks the status of the board for player1 by grading it, usable for the minmax function
-        {
-            int playerGrade;
-            return 0;
-        }
+        
 
         public void restartBoard() //resets the board
         {
@@ -100,7 +87,18 @@ namespace ISMancalaV1
         {
             return this.turn;
         }
-
+        
+        public String PrintInfo()
+        {
+            int[,] itemsInSpot1 = this.getItemsInSpot();
+            String string1 = "";
+            for (int i=0; i<2; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                    string1 = string1 +  + itemsInSpot1[i, j]+ ",";
+            }
+            return string1 ;
+        }
 
         public void Movement(int yLoc, int xLoc) //movement of the items is made in this program
         {
